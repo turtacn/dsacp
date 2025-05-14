@@ -165,9 +165,96 @@
   * **灵活的适配层**: 架构设计考虑了未来支持更多数据源的可能性。
   * **云原生友好**: 易于容器化部署和在 Kubernetes 等环境中管理。
   * **开源驱动**: 通过社区协作，不断完善和增强功能。
+
+
+## 6\. 项目目录结构（参考）
+
+```
+dsacp/
+├── cmd/                      # 应用入口
+│   ├── dsacp-proxy/          # dsacp 代理服务主程序
+│   │   └── main.go
+│   └── dsacp-admin/          # (可选) dsacp 管理服务 (如果需要集中配置管理)
+│       └── main.go
+├── pkg/                      # 可共享的库代码 (主要业务逻辑)
+│   ├── audit/                # 审计日志处理
+│   │   ├── audit.go          # 审计接口和基本结构
+│   │   └── ranger_auditor.go # 发送审计到 Ranger 的实现
+│   ├── auth/                 # 认证与授权逻辑
+│   │   ├── authorizer.go     # 授权器接口
+│   │   └── ranger_authorizer.go # Ranger 授权器实现 (与 Ranger Admin 交互)
+│   ├── common/               # 通用类型、常量、错误定义
+│   │   ├── constants/        # 常量定义
+│   │   │   └── constants.go
+│   │   ├── errors/           # 错误定义
+│   │   │   └── errors.go
+│   │   ├── types/            # 通用数据结构
+│   │   │   ├── enum/         # 枚举类型
+│   │   │   │   ├── resource_type.go
+│   │   │   │   ├── action_type.go
+│   │   │   │   └── sensitivity_level.go
+│   │   │   ├── policy.go     # Ranger 策略相关结构 (简化版)
+│   │   │   └── request.go    # 访问请求结构
+│   │   └── utils/            # 通用工具函数
+│   │       └── utils.go
+│   ├── config/               # 配置加载与管理
+│   │   ├── config.go
+│   │   └── types.go          # 配置结构定义
+│   ├── logger/               # 日志组件
+│   │   └── logger.go
+│   ├── masking/              # 数据脱敏逻辑
+│   │   ├── masker.go         # 脱敏器接口
+│   │   └── rules.go          # 脱敏规则实现
+│   ├── proxy/                # 代理核心逻辑
+│   │   ├── server.go         # 代理服务启动和管理
+│   │   ├── handler.go        # 请求处理接口
+│   │   ├── base_proxy.go     # 基础代理实现 (可被具体协议代理复用)
+│   │   ├── clickhouse/       # ClickHouse 代理实现
+│   │   │   ├── ch_handler.go
+│   │   │   ├── ch_protocol.go # (如果需要解析原生协议)
+│   │   │   └── ch_sql_parser.go # (如果需要解析 SQL)
+│   │   ├── doris/            # Doris 代理实现
+│   │   │   ├── doris_handler.go
+│   │   │   ├── mysql_protocol.go # (Doris/StarRocks 复用部分 MySQL 协议)
+│   │   │   └── doris_sql_parser.go
+│   │   ├── starrocks/        # StarRocks 代理实现
+│   │   │   ├── starrocks_handler.go
+│   │   │   └── starrocks_sql_parser.go
+│   │   └── HDFS/             # HDFS (如果通过代理访问, 例如 WebHDFS 代理)
+│   │       └── webhdfs_handler.go
+│   │   ├── kafka/            # Kafka (如果通过某种 HTTP 代理访问)
+│   │   │   └── kafka_rest_handler.go
+│   │   ├── hive/             # Hive (如果通过某种 HTTP 代理访问 HS2)
+│   │   │   └── hive_http_handler.go
+│   │   └── pulsar/           # Pulsar (如果通过某种 HTTP 代理访问)
+│   │       └── pulsar_http_handler.go
+│   ├── ranger/               # 与 Apache Ranger Admin 交互的客户端
+│   │   ├── client.go         # Ranger API 客户端接口
+│   │   ├── rest_client.go    # Ranger REST API 客户端实现
+│   │   └── types.go          # Ranger API 相关的数据结构
+│   └── framework/            # 面向接口的业务框架 (可选, 定义核心流程和扩展点)
+│       ├── pipeline.go       # 请求处理流水线
+│       └── plugin_manager.go # 插件管理器 (用于扩展新的数据源代理)
+├── internal/                 # 项目内部私有代码 (通常不被外部项目导入)
+│   └── bootstrap/            # 初始化启动逻辑
+│       └── bootstrap.go
+├── configs/                  # 配置文件示例
+│   └── dsacp-proxy.yaml.example
+├── docs/                     # 项目文档
+│   └── architecture.md
+├── test/                     # 测试相关 (单元测试、集成测试)
+│   ├── unit/
+│   └── integration/
+├── scripts/                  # 构建、部署等脚本
+│   ├── build.sh
+│   └── Dockerfile
+├── go.mod
+├── go.sum
+├── README.md
+└── LICENSE
+```  
   
-  
-## 6\. 参考文献
+## 7\. 参考文献
   
 - [1] StreamNative. (n.d.). Security - Apache Ranger. StreamNative Docs. (假设的参考，实际应为 Pulsar 官方文档中关于 Ranger 集成的页面)
 - [2] Community Discussions/Third-Party Solutions. (n.d.). GitHub, Stack Overflow 等平台上关于 "Apache Ranger ClickHouse plugin", "Apache Ranger Doris plugin", "Apache Ranger StarRocks plugin" 的搜索结果。
