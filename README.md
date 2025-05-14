@@ -65,7 +65,7 @@
 * **Apache Ranger Admin & DB**: 策略定义、存储和审计日志的中心。
 * **Ranger Plugins**: 用于 HDFS, Hive, Kafka, Pulsar 等系统的原生插件。
 
-![dsacp 逻辑架构图](docs/images/dsacp_logical_architecture.png)  更详细的架构设计请参见 [**详细架构文档 (Detailed Architecture Document)**](docs/architecture.md)。
+![dsacp 逻辑架构图](docs/images/deploy.png)  更详细的架构设计请参见 [**详细架构文档 (Detailed Architecture Document)**](docs/architecture.md)。
 
 ## 快速开始 (Getting Started)
 
